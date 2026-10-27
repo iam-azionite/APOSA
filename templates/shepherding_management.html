@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shepherding Management | APOSA</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background: #f4f7f5;
+            font-family: Arial, sans-serif;
+            color: #26352d;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        h1, h2 {
+            color: #006b3f;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccd6cf;
+        }
+
+        button {
+            background: #006b3f;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background: #004d2d;
+        }
+
+        .remove-button {
+            background: #b42318;
+            width: auto;
+            padding: 8px 12px;
+        }
+
+        .remove-button:hover {
+            background: #801b13;
+        }
+
+        .message {
+            padding: 12px;
+            background: #e4f5e9;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .error {
+            background: #fde8e7;
+        }
+
+        .group {
+            border-left: 5px solid #006b3f;
+        }
+
+        .group-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .badge {
+            background: #fff0b3;
+            padding: 7px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e9e6;
+            text-align: left;
+        }
+
+        th {
+            background: #edf5ef;
+        }
+
+        .empty {
+            color: #68756d;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 15px;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>APOSA Shepherding System</h1>
+    <p>Organize students by programme and assign eligible senior students as shepherds.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {% if message.tags == 'error' %}error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <h2>Create a Shepherding Group</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="create_group">
+
+            <label for="shepherd">Select a Shepherd</label>
+
+            <select name="shepherd" id="shepherd" required>
+                <option value="">Choose a senior student</option>
+
+                {% for shepherd in shepherds %}
+                    <option value="{{ shepherd.id }}">
+                        {{ shepherd.full_name }} —
+                        {{ shepherd.course }} —
+                        {{ shepherd.get_level_display }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Create Group</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Unassigned Students</h2>
+
+        {% if unassigned_students %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Programme</th>
+                        <th>Level</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for student in unassigned_students %}
+                        <tr>
+                            <td>{{ student.full_name }}</td>
+                            <td>{{ student.course }}</td>
+                            <td>{{ student.get_level_display }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty">There are no eligible unassigned students.</p>
+        {% endif %}
+    </div>
+
+    <h2>Existing Shepherding Groups</h2>
+
+    {% for group in groups %}
+        <div class="card group">
+
+            <div class="group-header">
+                <div>
+                    <h2>{{ group.shepherd.full_name }}</h2>
+                    <p>{{ group.shepherd.course }}</p>
+                    <p>{{ group.shepherd.get_level_display }}</p>
+                </div>
+
+                <span class="badge">
+                    {{ group.members.count }}/4 students
+                </span>
+            </div>
+
+            {% if group.members.all %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Level</th>
+                            <th>Residential Area</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for student in group.members.all %}
+                            <tr>
+                                <td>{{ student.full_name }}</td>
+                                <td>{{ student.get_level_display }}</td>
+                                <td>{{ student.residential_area }}</td>
+
+                                <td>
+                                    <form method="POST">
+                                        {% csrf_token %}
+
+                                        <input type="hidden"
+                                               name="action"
+                                               value="remove_student">
+
+                                        <input type="hidden"
+                                               name="group"
+                                               value="{{ group.id }}">
+
+                                        <input type="hidden"
+                                               name="student"
+                                               value="{{ student.id }}">
+
+                                        <button type="submit"
+                                                class="remove-button">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="empty">No students have been assigned yet.</p>
+            {% endif %}
+
+            {% if group.members.count < 4 %}
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <input type="hidden"
+                           name="action"
+                           value="assign_student">
+
+                    <input type="hidden"
+                           name="group"
+                           value="{{ group.id }}">
+
+                    <label for="student-{{ group.id }}">
+                        Assign a Student
+                    </label>
+
+                    <select name="student"
+                            id="student-{{ group.id }}"
+                            required>
+
+                        <option value="">Choose an unassigned student</option>
+
+                        {% for student in unassigned_students %}
+                            {% if student.course|lower == group.shepherd.course|lower %}
+                                <option value="{{ student.id }}">
+                                    {{ student.full_name }} —
+                                    {{ student.get_level_display }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+
+                    </select>
+
+                    <button type="submit">Assign Student</button>
+                </form>
+            {% else %}
+                <p><strong>This group has reached its four-student limit.</strong></p>
+            {% endif %}
+
+        </div>
+    {% empty %}
+        <div class="card">
+            <p class="empty">No shepherding groups have been created yet.</p>
+        </div>
+    {% endfor %}
+
+</div>
+</body>
+</html>

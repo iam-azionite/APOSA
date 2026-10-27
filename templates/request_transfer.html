@@ -1,0 +1,465 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Member Transfer | APOSA</title>
+
+    <style>
+        :root {
+            --blue: #172a88;
+            --blue-dark: #101d61;
+            --green: #159447;
+            --green-dark: #006b3f;
+            --text: #243047;
+            --muted: #758096;
+            --white: #ffffff;
+            --border: #e1e7f0;
+            --red: #b4232b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 35px 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, #e4eaff, transparent 40%),
+                linear-gradient(135deg, #f7f9ff, #e9effa);
+        }
+
+        .page-container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* Page heading */
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: #e5f5eb;
+            color: var(--green-dark);
+            padding: 9px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--blue);
+            font-size: 30px;
+            margin: 0 0 12px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Main card */
+
+        .container {
+            width: 100%;
+            background: var(--white);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid rgba(225, 231, 240, 0.8);
+            box-shadow: 0 15px 45px rgba(20, 38, 80, 0.09);
+        }
+
+        .section-heading {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-heading h2 {
+            margin: 0 0 8px;
+            font-size: 20px;
+            color: var(--blue);
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Member information */
+
+        .member-info {
+            background: #f4f6fc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e7f1;
+        }
+
+        .info-row:first-child {
+            padding-top: 0;
+        }
+
+        .info-row:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .info-value {
+            color: var(--text);
+            font-size: 14px;
+            font-weight: bold;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        /* Form fields */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        select,
+        textarea {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d7deeb;
+            border-radius: 9px;
+            background: #ffffff;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        textarea {
+            min-height: 125px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        select:focus,
+        textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(23, 42, 136, 0.09);
+        }
+
+        .field-help {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Error message */
+
+        .error {
+            background: #fff0f0;
+            color: var(--red);
+            padding: 14px 16px;
+            margin-bottom: 22px;
+            border: 1px solid #ffd1d1;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Information notice */
+
+        .notice {
+            display: flex;
+            gap: 12px;
+            background: #fff8e7;
+            border: 1px solid #f3dfaa;
+            color: #795516;
+            padding: 14px;
+            margin-bottom: 24px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .notice strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Submit button */
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--green-dark), var(--green));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(135deg, #004d2d, #087443);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(0, 107, 63, 0.2);
+        }
+
+        /* Navigation */
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 12px 17px;
+            background: var(--white);
+            color: var(--blue);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
+        .navigation a:hover {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .footer span {
+            color: var(--green-dark);
+            font-weight: bold;
+        }
+
+        /* Mobile responsiveness */
+
+        @media (max-width: 600px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .container {
+                padding: 24px 19px;
+                border-radius: 15px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .info-value {
+                text-align: left;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .navigation a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- Page heading -->
+    <header class="page-header">
+        <div class="header-badge">APOSA · ARISE AND BUILD</div>
+
+        <h1>Request Member Transfer</h1>
+
+        <p class="subtitle">
+            Submit a request to move a member to another residential zone.
+        </p>
+    </header>
+
+    <!-- Transfer form card -->
+    <main class="container">
+
+        <div class="section-heading">
+            <h2>Transfer Information</h2>
+            <p>Review the member's current details and provide the destination zone.</p>
+        </div>
+
+        <!-- Member details -->
+        <div class="member-info">
+
+            <div class="info-row">
+                <span class="info-label">Member Name</span>
+                <span class="info-value">{{ member.full_name }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Current Zone</span>
+                <span class="info-value">
+                    {{ member.zone|default:"Unassigned" }}
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Error message -->
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Transfer request -->
+        {% if zones %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="to_zone">Destination Zone</label>
+
+                    <select name="to_zone" id="to_zone" required>
+                        <option value="">Select a destination zone</option>
+
+                        {% for zone in zones %}
+                            <option value="{{ zone.id }}">
+                                {{ zone.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="field-help">
+                        Select the zone to which the member should be transferred.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason for Transfer</label>
+
+                    <textarea
+                        name="reason"
+                        id="reason"
+                        rows="4"
+                        required
+                        placeholder="Explain why the member needs to be transferred..."
+                    ></textarea>
+
+                    <div class="field-help">
+                        Provide a clear explanation to help the Chief Shepherd review the request.
+                    </div>
+                </div>
+
+                <div class="notice">
+                    <div>
+                        <strong>Important Notice</strong>
+                        Submitting this form sends a transfer request. The request
+                        should be reviewed before the member's zone is changed.
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">
+                    Submit Transfer Request
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <div class="notice">
+                <div>
+                    <strong>No Alternative Zones Available</strong>
+                    There are currently no alternative zones available for this member.
+                </div>
+            </div>
+
+        {% endif %}
+
+    </main>
+
+    <!-- Navigation -->
+    <nav class="navigation">
+        <a href="{% url 'member_list' %}">← Back to Members</a>
+        <a href="{% url 'dashboard' %}">Return to Dashboard</a>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+        APOSA Member Inventory System
+        <br>
+        <span>ARISE AND BUILD</span>
+        · &copy; {% now "Y" %}
+    </footer>
+
+</div>
+
+</body>
+</html>
+

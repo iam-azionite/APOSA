@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shepherding Group | APOSA</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            padding: 25px;
+            color: #26352d;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        h1, h2 {
+            color: #006b3f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e5e9e6;
+        }
+
+        th {
+            background: #edf5ef;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>My Shepherding Group</h1>
+
+    {% if error %}
+        <div class="card">
+            <p>{{ error }}</p>
+        </div>
+
+    {% elif group %}
+        <div class="card">
+            <h2>{{ group.shepherd.full_name }}</h2>
+            <p><strong>Programme:</strong> {{ group.shepherd.course }}</p>
+            <p><strong>Level:</strong> {{ group.shepherd.get_level_display }}</p>
+            <p><strong>Assigned students:</strong> {{ group.members.count }}</p>
+        </div>
+
+        <div class="card">
+            <h2>My Students</h2>
+
+            {% if group.members.all %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Level</th>
+                            <th>Phone</th>
+                            <th>Residential Area</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for student in group.members.all %}
+                            <tr>
+                                <td>{{ student.full_name }}</td>
+                                <td>{{ student.get_level_display }}</td>
+                                <td>{{ student.phone_number }}</td>
+                                <td>{{ student.residential_area }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No students have been assigned to you yet.</p>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <div class="card">
+            <p>You do not have a shepherding group yet. Please contact the Chief Shepherd.</p>
+        </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

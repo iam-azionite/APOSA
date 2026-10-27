@@ -1,0 +1,496 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Transfer Requests | APOSA</title>
+
+    <style>
+        :root {
+            --blue: #172a88;
+            --blue-dark: #101d61;
+            --green: #159447;
+            --green-dark: #006b3f;
+            --text: #243047;
+            --muted: #758096;
+            --white: #ffffff;
+            --border: #e1e7f0;
+            --red: #b4232b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 35px 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, #e4eaff, transparent 40%),
+                linear-gradient(135deg, #f7f9ff, #e9effa);
+        }
+
+        .page-container {
+            max-width: 1450px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .heading h1 {
+            color: var(--blue);
+            font-size: 30px;
+            margin: 0 0 10px;
+        }
+
+        .heading p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .header-badge {
+            background: #e5f5eb;
+            color: var(--green-dark);
+            padding: 11px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+
+        .navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 12px 17px;
+            background: var(--white);
+            color: var(--blue);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
+        .navigation a:hover {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+            transform: translateY(-2px);
+        }
+
+        /* Table card */
+
+        .table-card {
+            background: var(--white);
+            border: 1px solid rgba(225, 231, 240, 0.8);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(20, 38, 80, 0.07);
+        }
+
+        .table-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-heading h2 {
+            color: var(--blue);
+            font-size: 20px;
+            margin: 0 0 7px;
+        }
+
+        .table-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .table-label {
+            background: #edf1ff;
+            color: var(--blue);
+            padding: 9px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #edf0f5;
+            text-align: left;
+            vertical-align: top;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        th {
+            background: #f4f6fc;
+            color: var(--blue);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f7f9ff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .zone-name {
+            color: #526078;
+        }
+
+        .reason {
+            min-width: 180px;
+            max-width: 300px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Status badges */
+
+        .status {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status.pending {
+            background: #fff4df;
+            color: #9a6700;
+        }
+
+        .status.approved {
+            background: #e4f7eb;
+            color: #087443;
+        }
+
+        .status.rejected {
+            background: #ffe8e8;
+            color: #b4232b;
+        }
+
+        /* Action buttons */
+
+        .action-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .action-button {
+            padding: 9px 12px;
+            border: none;
+            border-radius: 7px;
+            color: var(--white);
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .approve {
+            background: var(--green-dark);
+        }
+
+        .approve:hover {
+            background: #004d2d;
+            transform: translateY(-1px);
+        }
+
+        .reject {
+            background: var(--red);
+        }
+
+        .reject:hover {
+            background: #8f1d16;
+            transform: translateY(-1px);
+        }
+
+        .reviewed {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Empty state */
+
+        .empty-state {
+            text-align: center;
+            padding: 55px 20px !important;
+            color: var(--muted);
+        }
+
+        .empty-state strong {
+            display: block;
+            margin-bottom: 9px;
+            color: var(--blue);
+            font-size: 17px;
+        }
+
+        /* Footer */
+
+        .footer {
+            margin-top: 28px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .footer span {
+            color: var(--green-dark);
+            font-weight: bold;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            .heading h1 {
+                font-size: 25px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .navigation a {
+                text-align: center;
+            }
+
+            .table-heading {
+                padding: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- Page header -->
+    <header class="page-header">
+        <div class="heading">
+            <h1>Member Transfer Requests</h1>
+            <p>
+                Review member transfer requests and track their approval status.
+            </p>
+        </div>
+
+        <div class="header-badge">
+            APOSA · GOD FIRST
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navigation">
+        <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
+
+        <a href="{% url 'member_list' %}">View Church Members</a>
+    </nav>
+
+    <!-- Transfer requests -->
+    <section class="table-card">
+
+        <div class="table-heading">
+            <div>
+                <h2>Transfer Request Directory</h2>
+                <p>
+                    Review the destination zone, reason, requester, and current status.
+                </p>
+            </div>
+
+            <span class="table-label">Transfer Management</span>
+        </div>
+
+        {% if transfers %}
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>From Zone</th>
+                            <th>Destination Zone</th>
+                            <th>Reason</th>
+                            <th>Requested By</th>
+                            <th>Status</th>
+
+                            {% if role == 'chief_shepherd' %}
+                                <th>Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for transfer in transfers %}
+                            <tr>
+                                <td>
+                                    <span class="member-name">
+                                        {{ transfer.member.full_name }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="zone-name">
+                                        {{ transfer.from_zone|default:"Unassigned" }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="zone-name">
+                                        {{ transfer.to_zone }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="reason">
+                                        {{ transfer.reason }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ transfer.requested_by|default:"Unknown" }}
+                                </td>
+
+                                <td>
+                                    <span class="status {{ transfer.status }}">
+                                        {{ transfer.get_status_display }}
+                                    </span>
+                                </td>
+
+                                {% if role == 'chief_shepherd' %}
+                                    <td>
+                                        {% if transfer.status == 'pending' %}
+
+                                            <form
+                                                method="POST"
+                                                action="{% url 'review_transfer' transfer.id %}"
+                                                class="action-form"
+                                            >
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="action-button approve"
+                                                    name="action"
+                                                    value="approve"
+                                                >
+                                                    Approve
+                                                </button>
+
+                                                <button
+                                                    type="submit"
+                                                    class="action-button reject"
+                                                    name="action"
+                                                    value="reject"
+                                                >
+                                                    Reject
+                                                </button>
+                                            </form>
+
+                                        {% else %}
+                                            <span class="reviewed">
+                                                ✓ Reviewed
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <strong>No Transfer Requests Yet</strong>
+                There are currently no transfer requests to display.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        APOSA Member Inventory System
+        <br>
+        <span>GOD FIRST</span>
+        · &copy; {% now "Y" %}
+    </footer>
+
+</div>
+
+</body>
+</html>
+

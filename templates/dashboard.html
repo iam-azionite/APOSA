@@ -1,0 +1,1310 @@
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOSA | Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --blue: #172a88;
+            --blue-dark: #101d61;
+            --red: #e31b23;
+            --green: #159447;
+            --light: #f4f7fb;
+            --white: #ffffff;
+            --text: #243047;
+            --muted: #758096;
+            --border: #e5eaf2;
+            --shadow: 0 8px 28px rgba(20, 38, 80, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--light);
+            color: var(--text);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 250px;
+            background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+            color: white;
+            padding: 25px 18px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .brand {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,.18);
+        }
+
+        .brand img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+        }
+
+        .brand h2 {
+            margin: 12px 0 5px;
+            font-size: 23px;
+        }
+
+        .brand p {
+            margin: 0;
+            font-size: 12px;
+            color: #dbe5ff;
+        }
+
+        .nav-title {
+            margin: 25px 10px 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #b9c8ff;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 13px 14px;
+            border-radius: 9px;
+            margin-bottom: 7px;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,.17);
+        }
+
+        .logout {
+            margin-top: 25px;
+            background: var(--red);
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            margin: 0 0 7px;
+            font-size: 28px;
+            color: var(--blue-dark);
+        }
+
+        .topbar p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: #e8edff;
+            color: var(--blue);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, var(--blue), #344fc5);
+            color: white;
+            padding: 27px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome h2 {
+            margin: 0 0 10px;
+            font-size: 24px;
+        }
+
+        .welcome p {
+            margin: 0;
+            line-height: 1.7;
+            color: #e0e7ff;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--blue);
+            overflow-wrap: anywhere;
+        }
+
+        .stat-card.red {
+            border-top-color: var(--red);
+        }
+
+        .stat-card.green {
+            border-top-color: var(--green);
+        }
+
+        .stat-card.orange {
+            border-top-color: #f0a51b;
+        }
+
+        .stat-card p {
+            margin: 0 0 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 30px;
+            color: var(--blue-dark);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 17px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 21px;
+            color: var(--blue-dark);
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .action-card {
+            display: block;
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(20, 38, 80, .13);
+        }
+
+        .action-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: #e8edff;
+            color: var(--blue);
+            border-radius: 12px;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .action-card h3 {
+            margin: 0 0 9px;
+            font-size: 16px;
+        }
+
+        .action-card p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        th {
+            color: var(--blue-dark);
+            background: #f8faff;
+        }
+
+        tbody tr:hover {
+            background: #fafbff;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #e2f7e9;
+            color: #16733a;
+        }
+
+        .status.pending {
+            background: #fff2d5;
+            color: #976000;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .empty {
+            color: var(--muted);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--blue-dark);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: white;
+            color: var(--text);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(23,42,136,.1);
+        }
+
+        .btn {
+            display: inline-block;
+            border: none;
+            border-radius: 9px;
+            padding: 12px 18px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-dark);
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: #e2f7e9;
+            color: #16733a;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .message.warning {
+            background: #fff2d5;
+            color: #976000;
+        }
+
+        .group-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            margin-bottom: 22px;
+            border: 1px solid var(--border);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .group-header h3 {
+            margin: 0 0 8px;
+            color: var(--blue-dark);
+        }
+
+        .group-header p {
+            margin: 5px 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .assignment-form {
+            margin-top: 22px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .action-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                padding: 18px;
+            }
+
+            .brand img {
+                width: 75px;
+                height: 75px;
+            }
+
+            .nav-title {
+                margin-top: 18px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 18px;
+            }
+
+            .topbar h1 {
+                font-size: 24px;
+            }
+
+            .welcome h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats,
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card,
+            .group-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <img src="{% static 'images/Main.jpeg' %}" alt="APOSA Arise and Build">
+        <h2>APOSA</h2>
+        <p>Arise and Build · Member Inventory</p>
+    </div>
+
+    <p class="nav-title">Main Menu</p>
+
+    <a class="nav-link {% if not page %}active{% endif %}"
+       href="{% url 'dashboard' %}">
+        🏠 Dashboard
+    </a>
+
+    <a class="nav-link" href="{% url 'member_list' %}">
+        👥 Members
+    </a>
+
+    <a class="nav-link" href="{% url 'register_member' %}">
+        ➕ Register Member
+    </a>
+
+    {% if role == 'chief_shepherd' %}
+        <p class="nav-title">Administration</p>
+
+        <a class="nav-link" href="{% url 'transfer_requests' %}">
+            🔄 Change location
+        </a>
+
+        <a class="nav-link" href="/admin/members/zone/">
+            📍 Manage Zones
+        </a>
+
+        <a class="nav-link" href="/admin/members/userprofile/">
+            🛡️ User Roles
+        </a>
+
+        <a class="nav-link" href="/admin/members/member/">
+            📋 Manage Members
+        </a>
+
+        <a class="nav-link {% if page == 'shepherding' %}active{% endif %}"
+           href="{% url 'shepherding_management' %}">
+            🤝 Shepherding Groups
+        </a>
+
+    {% elif role == 'zone_rep' %}
+        <p class="nav-title">Zone Management</p>
+
+        <a class="nav-link" href="{% url 'transfer_requests' %}">
+            🔄 Change location
+        </a>
+
+    {% elif role == 'shepherd' %}
+        <p class="nav-title">Shepherding</p>
+
+        <a class="nav-link {% if page == 'shepherd_dashboard' %}active{% endif %}"
+           href="{% url 'shepherd_dashboard' %}">
+            🤝 My Shepherding Group
+        </a>
+    {% endif %}
+
+    <a class="nav-link logout" href="{% url 'logout' %}">
+        ↪ Logout
+    </a>
+</aside>
+
+<main class="main">
+
+{% if page == 'shepherd_dashboard' %}
+
+    <!-- SHEPHERD DASHBOARD -->
+
+    <header class="topbar">
+        <div>
+            <h1>My Shepherding Group</h1>
+            <p>
+                Welcome back, {{ request.user.username }}.
+                View the students assigned to your care.
+            </p>
+        </div>
+
+        <span class="role-badge">Shepherd</span>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message
+                {% if message.tags == 'success' %}success
+                {% elif message.tags == 'error' %}error
+                {% elif message.tags == 'warning' %}warning
+                {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="welcome">
+        <h2>Welcome, Shepherd!</h2>
+        <p>
+            Your responsibility is to guide, encourage, and support the
+            students assigned to your shepherding group.
+        </p>
+    </section>
+
+    {% if error_message %}
+        <div class="message warning">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    {% if group %}
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <p>Your Shepherding Group</p>
+                <h3 style="font-size: 20px;">
+                    {{ group.shepherd.full_name }}
+                </h3>
+            </div>
+
+            <div class="stat-card green">
+                <p>Your Programme</p>
+                <h3 style="font-size: 18px;">
+                    {{ group.shepherd.course|default:"Not specified" }}
+                </h3>
+            </div>
+
+            <div class="stat-card orange">
+                <p>Your Academic Level</p>
+                <h3 style="font-size: 20px;">
+                    {{ group.shepherd.get_level_display }}
+                </h3>
+            </div>
+
+            <div class="stat-card red">
+                <p>Students Assigned</p>
+                <h3>{{ total_students|default:0 }}/4</h3>
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="section-heading">
+                <h2>Students Under My Care</h2>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student Name</th>
+                            <th>Programme</th>
+                            <th>Academic Level</th>
+                            <th>Residential Area</th>
+                            <th>Zone</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+
+                                <td>
+                                    <strong>{{ student.full_name }}</strong>
+                                </td>
+
+                                <td>{{ student.course|default:"Not specified" }}</td>
+
+                                <td>{{ student.get_level_display }}</td>
+
+                                <td>
+                                    {{ student.residential_area|default:"Not provided" }}
+                                </td>
+
+                                <td>
+                                    {% if student.zone %}
+                                        {{ student.zone.name }}
+                                    {% else %}
+                                        Not assigned
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="empty">
+                                    No students have been assigned to your
+                                    shepherding group yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="section-heading">
+                <h2>My Responsibilities</h2>
+            </div>
+
+            <div class="action-grid">
+
+                <div class="action-card">
+                    <div class="action-icon">👥</div>
+                    <h3>Know Your Students</h3>
+                    <p>
+                        Become familiar with the students assigned to your
+                        shepherding group.
+                    </p>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-icon">🙏</div>
+                    <h3>Spiritual Growth</h3>
+                    <p>
+                        Encourage your students in fellowship, prayer,
+                        and the study of God's Word.
+                    </p>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-icon">📍</div>
+                    <h3>Member Information</h3>
+                    <p>
+                        Use the available member information to understand
+                        the residential zones of your students.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+{% elif page == 'shepherding' %}
+
+    <!-- CHIEF SHEPHERD: SHEPHERDING MANAGEMENT -->
+
+    <header class="topbar">
+        <div>
+            <h1>Shepherding Management</h1>
+            <p>Create shepherding groups and assign students from the same programme.</p>
+        </div>
+
+        <span class="role-badge">Chief Shepherd</span>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message
+                {% if message.tags == 'success' %}success
+                {% elif message.tags == 'error' %}error
+                {% elif message.tags == 'warning' %}warning
+                {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="welcome">
+        <h2>Build Stronger Student Fellowship</h2>
+        <p>
+            Assign eligible senior students to shepherd junior students studying
+            the same academic programme. Each group can have a maximum of four students.
+        </p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <p>Total Shepherding Groups</p>
+            <h3>{{ total_groups|default:0 }}</h3>
+        </div>
+
+        <div class="stat-card green">
+            <p>Available Shepherds</p>
+            <h3>{{ shepherds.count }}</h3>
+        </div>
+
+        <div class="stat-card orange">
+            <p>Eligible Junior Students</p>
+            <h3>{{ students.count }}</h3>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Create a Shepherding Group</h2>
+        </div>
+
+        <div class="chart-card">
+            <form method="POST">
+                {% csrf_token %}
+
+                <input type="hidden" name="action" value="create_group">
+
+                <div class="form-group">
+                    <label for="shepherd">Select a Shepherd</label>
+
+                    <select class="form-control" name="shepherd" id="shepherd" required>
+                        <option value="">Choose a senior student</option>
+
+                        {% for shepherd in shepherds %}
+                            <option value="{{ shepherd.id }}">
+                                {{ shepherd.full_name }} |
+                                {{ shepherd.course }} |
+                                {{ shepherd.get_level_display }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <p class="help-text">
+                        Eligible shepherds are Level 400, fifth-year, or sixth-year
+                        students who have a registered programme.
+                    </p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    + Create Group
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Existing Shepherding Groups</h2>
+        </div>
+
+        {% for group in groups %}
+            <div class="group-card">
+
+                <div class="group-header">
+                    <div>
+                        <h3>🤝 {{ group.shepherd.full_name }}</h3>
+
+                        <p>
+                            <strong>Programme:</strong>
+                            {{ group.shepherd.course }}
+                        </p>
+
+                        <p>
+                            <strong>Level:</strong>
+                            {{ group.shepherd.get_level_display }}
+                        </p>
+
+                        <p>
+                            <strong>Students assigned:</strong>
+                            {{ group.members.count }} / 4
+                        </p>
+                    </div>
+
+                    <span class="role-badge">Shepherd Group</span>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Programme</th>
+                                <th>Level</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for student in group.members.all %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>{{ student.course }}</td>
+                                    <td>{{ student.get_level_display }}</td>
+
+                                    <td>
+                                        <form method="POST"
+                                              onsubmit="return confirm('Remove this student from the group?');">
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="action" value="remove_student">
+                                            <input type="hidden" name="group" value="{{ group.id }}">
+                                            <input type="hidden" name="student" value="{{ student.id }}">
+
+                                            <button type="submit" class="btn btn-danger">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="empty">
+                                        No students have been assigned to this group.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if group.members.count < 4 %}
+                    <div class="assignment-form">
+                        <h4>Assign a Student</h4>
+
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="action" value="assign_student">
+                            <input type="hidden" name="group" value="{{ group.id }}">
+
+                            <div class="form-group">
+                                <label for="student-{{ group.id }}">
+                                    Choose a student from the same programme
+                                </label>
+
+                                <select class="form-control"
+                                        name="student"
+                                        id="student-{{ group.id }}"
+                                        required>
+                                    <option value="">Choose a junior student</option>
+
+                                    {% for student in students %}
+                                        {% if student.course|lower == group.shepherd.course|lower %}
+                                            <option value="{{ student.id }}">
+                                                {{ student.full_name }} |
+                                                {{ student.course }} |
+                                                {{ student.get_level_display }}
+                                            </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+
+                                <p class="help-text">
+                                    Only Level 100, 200, and 300 students in the
+                                    shepherd's programme should be assigned.
+                                    The server must validate assignments.
+                                </p>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Assign Student
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <p class="status">
+                        This group has reached its four-student limit.
+                    </p>
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+            <div class="chart-card empty">
+                <h3>No Shepherding Groups Yet</h3>
+                <p>Create a group above to get started.</p>
+            </div>
+        {% endfor %}
+    </section>
+
+{% else %}
+
+    <!-- NORMAL DASHBOARD -->
+
+    <header class="topbar">
+        <div>
+            <h1>Dashboard</h1>
+            <p>
+                Welcome back, {{ request.user.username }}.
+                Here's your APOSA overview.
+            </p>
+        </div>
+
+        <span class="role-badge">
+            {% if role == 'chief_shepherd' %}
+                Chief Shepherd
+            {% elif role == 'zone_rep' %}
+                Zone Representative
+            {% elif role == 'shepherd' %}
+                Shepherd
+            {% else %}
+                Scout
+            {% endif %}
+        </span>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message
+                {% if message.tags == 'success' %}success
+                {% elif message.tags == 'error' %}error
+                {% elif message.tags == 'warning' %}warning
+                {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="welcome">
+        <h2>Welcome to APOSA — Arise and Build</h2>
+        <p>
+            Manage members, organize residential zones, and keep the fellowship's
+            member inventory accurate and up to date.
+        </p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <p>Total Members</p>
+            <h3>{{ total_members|default:0 }}</h3>
+        </div>
+
+        <div class="stat-card green">
+            <p>Confirmed Members</p>
+            <h3>{{ confirmed_members|default:0 }}</h3>
+        </div>
+
+        <div class="stat-card red">
+            <p>Unconfirmed Members</p>
+            <h3>{{ unconfirmed_members|default:0 }}</h3>
+        </div>
+
+        <div class="stat-card orange">
+            <p>Unassigned Members</p>
+            <h3>{{ unassigned_members|default:0 }}</h3>
+        </div>
+
+        {% if role == 'chief_shepherd' or role == 'zone_rep' %}
+            <div class="stat-card">
+                <p>
+                    {% if role == 'chief_shepherd' %}
+                        Total Zones
+                    {% else %}
+                        Your Zone
+                    {% endif %}
+                </p>
+
+                <h3>{{ total_zones|default:0 }}</h3>
+            </div>
+        {% endif %}
+
+        {% if role == 'chief_shepherd' %}
+            <div class="stat-card orange">
+                <p>Pending Change of Location</p>
+                <h3>{{ pending_transfers|default:0 }}</h3>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Quick Actions</h2>
+        </div>
+
+        <div class="action-grid">
+
+            <a class="action-card" href="{% url 'member_list' %}">
+                <div class="action-icon">👥</div>
+                <h3>View Members</h3>
+                <p>Browse and search the members you are permitted to view.</p>
+            </a>
+
+            <a class="action-card" href="{% url 'register_member' %}">
+                <div class="action-icon">➕</div>
+                <h3>Register a Member</h3>
+                <p>Add a newly discovered member to the APOSA inventory.</p>
+            </a>
+
+            {% if role == 'chief_shepherd' or role == 'zone_rep' %}
+                <a class="action-card" href="{% url 'transfer_requests' %}">
+                    <div class="action-icon">🔄</div>
+                    <h3>Change Location</h3>
+                    <p>View and manage member transfer requests available to you.</p>
+                </a>
+            {% endif %}
+
+            {% if role == 'chief_shepherd' %}
+                <a class="action-card" href="/admin/members/zone/">
+                    <div class="action-icon">📍</div>
+                    <h3>Manage Zones</h3>
+                    <p>Create zones and assign representatives.</p>
+                </a>
+
+                <a class="action-card" href="/admin/members/userprofile/">
+                    <div class="action-icon">🛡️</div>
+                    <h3>Manage User Roles</h3>
+                    <p>Review user roles and their assigned zones.</p>
+                </a>
+
+                <a class="action-card" href="/admin/members/member/">
+                    <div class="action-icon">📋</div>
+                    <h3>Manage Member Records</h3>
+                    <p>Review member details and confirmation status.</p>
+                </a>
+
+                <a class="action-card" href="{% url 'shepherding_management' %}">
+                    <div class="action-icon">🤝</div>
+                    <h3>Shepherding Groups</h3>
+                    <p>Create shepherding groups and assign junior students.</p>
+                </a>
+            {% endif %}
+
+            {% if role == 'shepherd' %}
+                <a class="action-card" href="{% url 'shepherd_dashboard' %}">
+                    <div class="action-icon">🤝</div>
+                    <h3>My Shepherding Group</h3>
+                    <p>View the students assigned to your care.</p>
+                </a>
+            {% endif %}
+
+        </div>
+    </section>
+
+    {% if role == 'chief_shepherd' %}
+        <section class="section">
+            <div class="section-heading">
+                <h2>Zone Overview</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Representative</th>
+                            <th>Members</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in zone_data %}
+                            <tr>
+                                <td>{{ item.zone.name }}</td>
+
+                                <td>
+                                    {% if item.zone.representative %}
+                                        {{ item.zone.representative.username }}
+                                    {% else %}
+                                        Not assigned
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ item.member_count }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="empty">
+                                    No zones have been created yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-heading">
+                <h2>Membership by Zone</h2>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-container">
+                    <canvas id="zoneChart"></canvas>
+                </div>
+
+                <p id="chartEmpty" class="empty" hidden>
+                    Create zones to see the membership chart.
+                </p>
+            </div>
+        </section>
+
+        {{ zone_labels|json_script:"zone-labels-data" }}
+        {{ zone_member_counts|json_script:"zone-counts-data" }}
+
+        <script>
+            const labels = JSON.parse(
+                document.getElementById('zone-labels-data').textContent
+            );
+
+            const counts = JSON.parse(
+                document.getElementById('zone-counts-data').textContent
+            );
+
+            if (labels.length > 0) {
+                new Chart(document.getElementById('zoneChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Number of Members',
+                            data: counts,
+                            backgroundColor: '#172a88',
+                            borderRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('zoneChart').hidden = true;
+                document.getElementById('chartEmpty').hidden = false;
+            }
+        </script>
+
+    {% elif role == 'zone_rep' %}
+        <section class="section">
+            <div class="section-heading">
+                <h2>Your Zone</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Members</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in zone_data %}
+                            <tr>
+                                <td>{{ item.zone.name }}</td>
+                                <td>{{ item.member_count }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="empty">
+                                    No zone has been assigned to your account yet.
+                                    Please contact the Chief Shepherd.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    {% elif role == 'shepherd' %}
+        <section class="welcome">
+            <h2>Welcome, Shepherd</h2>
+            <p>
+                Open <strong>My Shepherding Group</strong> to view your assigned
+                students and their available member information.
+            </p>
+        </section>
+
+    {% else %}
+        <section class="section">
+            <div class="welcome">
+                <h2>Scout Workspace</h2>
+                <p>
+                    Register members you discover and keep track of the records
+                    you have submitted.
+                </p>
+            </div>
+        </section>
+    {% endif %}
+
+{% endif %}
+
+<footer>
+    &copy; {% now "Y" %} APOSA — Arise and Build. Member Management System.
+</footer>
+
+</main>
+
+</body>
+</html>
+```

@@ -1,0 +1,317 @@
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOSA | Create Account</title>
+
+    <style>
+        :root {
+            --blue: #172a88;
+            --blue-dark: #101d61;
+            --red: #e31b23;
+            --green: #159447;
+            --light: #f3f6fc;
+            --text: #243047;
+            --muted: #758096;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 25px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top left, #e4eaff, transparent 40%),
+                linear-gradient(135deg, #f7f9ff, #e9effa);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 470px;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(20, 38, 80, .12);
+        }
+
+        .logo {
+            display: block;
+            width: 115px;
+            height: 115px;
+            object-fit: contain;
+            margin: 0 auto 15px;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 27px;
+        }
+
+        .heading h1 {
+            color: var(--blue-dark);
+            margin: 0 0 8px;
+            font-size: 27px;
+        }
+
+        .heading p {
+            color: var(--muted);
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .god-first {
+            color: var(--red);
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .messages {
+            margin-bottom: 17px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            background: #e5f8eb;
+            color: #176b35;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .error-box {
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #a51920;
+            font-size: 13px;
+            margin-bottom: 17px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce2ee;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .field input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(23, 42, 136, .1);
+        }
+
+        .help {
+            display: block;
+            margin-top: 7px;
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .help ul {
+            padding-left: 18px;
+            margin: 5px 0;
+        }
+
+        .errorlist {
+            color: var(--red);
+            font-size: 12px;
+            padding-left: 18px;
+            margin-top: 7px;
+        }
+
+        .submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            color: white;
+            background: linear-gradient(120deg, var(--blue), #344fc5);
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+            margin-top: 5px;
+        }
+
+        .submit:hover {
+            background: var(--blue-dark);
+            transform: translateY(-1px);
+        }
+
+        .bottom {
+            text-align: center;
+            margin-top: 23px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .bottom a {
+            color: var(--blue);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .bottom a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 22px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            .logo {
+                width: 95px;
+                height: 95px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <img
+        src="{% static 'images/Main.jpeg' %}"
+        alt="APOSA Arise and Build"
+        class="logo"
+    >
+
+    <div class="heading">
+        <h1>Create Your Account</h1>
+        <p>Join the APOSA member inventory system.</p>
+        <div class="Arise and Build">Arise and Build</div>
+    </div>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if form.non_field_errors %}
+        <div class="error-box">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="field">
+            <label for="{{ form.username.id_for_label }}">
+                Username
+            </label>
+
+            {{ form.username }}
+
+            {% if form.username.errors %}
+                {{ form.username.errors }}
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label for="id_email">Email Address</label>
+
+            <input
+                type="email"
+                id="id_email"
+                name="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                value="{{ request.POST.email|default:'' }}"
+                required
+            >
+
+            {% if form.email.errors %}
+                {{ form.email.errors }}
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label for="{{ form.password1.id_for_label }}">
+                Password
+            </label>
+
+            {{ form.password1 }}
+
+            {% if form.password1.errors %}
+                {{ form.password1.errors }}
+            {% endif %}
+
+            {% if form.password1.help_text %}
+                <div class="help">
+                    {{ form.password1.help_text|safe }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label for="{{ form.password2.id_for_label }}">
+                Confirm Password
+            </label>
+
+            {{ form.password2 }}
+
+            {% if form.password2.errors %}
+                {{ form.password2.errors }}
+            {% endif %}
+        </div>
+
+        <button type="submit" class="submit">
+            Create Account
+        </button>
+    </form>
+
+    <div class="bottom">
+        Already have an account?
+        <a href="{% url 'login' %}">Log in here</a>
+    </div>
+
+    <div class="footer">
+        &copy; {% now "Y" %} APOSA — Arise and Build.
+    </div>
+
+</div>
+
+</body>
+</html>
+

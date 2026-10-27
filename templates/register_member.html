@@ -1,0 +1,339 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register Member | APOSA</title>
+
+    <style>
+        :root {
+            --blue: #172a88;
+            --blue-dark: #101d61;
+            --green: #159447;
+            --green-dark: #006b3f;
+            --light: #f3f6fc;
+            --text: #243047;
+            --muted: #758096;
+            --white: #ffffff;
+            --border: #e1e7f0;
+            --red: #b4232b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 35px 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, #e4eaff, transparent 40%),
+                linear-gradient(135deg, #f7f9ff, #e9effa);
+        }
+
+        .page-container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: #e5f5eb;
+            color: var(--green-dark);
+            padding: 9px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--blue);
+            font-size: 32px;
+            margin: 0 0 12px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Form card */
+
+        .form-card {
+            background: var(--white);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid rgba(225, 231, 240, 0.8);
+            box-shadow: 0 15px 45px rgba(20, 38, 80, 0.09);
+        }
+
+        .form-heading {
+            margin-bottom: 27px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-heading h2 {
+            color: var(--blue);
+            font-size: 21px;
+            margin: 0 0 8px;
+        }
+
+        .form-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Django form fields */
+
+        form p {
+            margin: 0 0 22px;
+            text-align: left;
+        }
+
+        form p label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            margin-top: 7px;
+            box-sizing: border-box;
+            border: 1px solid #d7deeb;
+            border-radius: 9px;
+            background: #ffffff;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(23, 42, 136, 0.09);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        form p .helptext {
+            display: block;
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        ul.errorlist {
+            list-style: none;
+            margin: 8px 0 0;
+            padding: 0;
+            color: var(--red);
+            font-size: 13px;
+        }
+
+        /* Error message */
+
+        .error {
+            background: #fff0f0;
+            color: var(--red);
+            padding: 14px 16px;
+            margin-bottom: 22px;
+            border: 1px solid #ffd1d1;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Submit button */
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, var(--green-dark), #159447);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(135deg, #004d2d, #087443);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(0, 107, 63, 0.2);
+        }
+
+        /* Navigation links */
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 12px 17px;
+            background: var(--white);
+            color: var(--blue);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
+        .navigation a:hover {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .footer span {
+            color: var(--green-dark);
+            font-weight: bold;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .form-card {
+                padding: 24px 19px;
+                border-radius: 15px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .navigation a {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- Page heading -->
+    <header class="page-header">
+        <div class="header-badge">APOSA · ARISE AND BUILD</div>
+
+        <h1>Register New Member</h1>
+
+        <p class="subtitle">
+            Add a new member to the APOSA member inventory system.
+            <br>
+            Please provide accurate member information.
+        </p>
+    </header>
+
+    <!-- Registration form -->
+    <main class="form-card">
+
+        <div class="form-heading">
+            <h2>Member Information</h2>
+            <p>Complete the fields below to register the member.</p>
+        </div>
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="submit-button">
+                Register Member
+            </button>
+        </form>
+
+    </main>
+
+    <!-- Navigation -->
+    <nav class="navigation">
+        <a href="{% url 'member_list' %}">
+            View All Members
+        </a>
+
+        <a href="{% url 'dashboard' %}">
+            ← Return to Dashboard
+        </a>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+        APOSA Member Inventory System
+        <br>
+        <span>ARISE AND BUILD</span>
+        · &copy; {% now "Y" %}
+    </footer>
+
+</div>
+
+</body>
+</html>
+
