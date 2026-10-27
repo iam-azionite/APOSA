@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#172a88">
+
     <title>APOSA | Create Account</title>
 
     <style>
@@ -16,51 +18,61 @@
             --light: #f3f6fc;
             --text: #243047;
             --muted: #758096;
+            --border: #dce2ee;
         }
 
         * {
             box-sizing: border-box;
         }
 
+        html {
+            min-height: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
-            padding: 25px 15px;
+            min-height: 100dvh;
+            padding: 24px 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: Arial, Helvetica, sans-serif;
             background:
-                radial-gradient(circle at top left, #e4eaff, transparent 40%),
+                radial-gradient(circle at top left, #e4eaff, transparent 45%),
                 linear-gradient(135deg, #f7f9ff, #e9effa);
+            color: var(--text);
         }
 
         .container {
             width: 100%;
-            max-width: 470px;
-            background: white;
-            padding: 35px;
+            max-width: 440px;
+            background: #ffffff;
+            padding: 32px;
             border-radius: 20px;
-            box-shadow: 0 15px 50px rgba(20, 38, 80, .12);
+            box-shadow: 0 15px 45px rgba(20, 38, 80, 0.12);
+            overflow-wrap: anywhere;
         }
 
         .logo {
             display: block;
-            width: 115px;
-            height: 115px;
+            width: 105px;
+            height: 105px;
             object-fit: contain;
             margin: 0 auto 15px;
         }
 
         .heading {
             text-align: center;
-            margin-bottom: 27px;
+            margin-bottom: 25px;
         }
 
         .heading h1 {
             color: var(--blue-dark);
-            margin: 0 0 8px;
-            font-size: 27px;
+            margin: 0 0 9px;
+            font-size: 26px;
+            line-height: 1.25;
         }
 
         .heading p {
@@ -75,7 +87,7 @@
             font-weight: bold;
             letter-spacing: 2px;
             font-size: 12px;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .messages {
@@ -88,6 +100,7 @@
             background: #e5f8eb;
             color: #176b35;
             font-size: 13px;
+            line-height: 1.5;
             margin-bottom: 8px;
         }
 
@@ -97,11 +110,18 @@
             background: #fff0f0;
             color: #a51920;
             font-size: 13px;
+            line-height: 1.5;
             margin-bottom: 17px;
         }
 
+        .error-box ul,
+        .field .errorlist {
+            padding-left: 18px;
+        }
+
         .field {
-            margin-bottom: 18px;
+            margin-bottom: 19px;
+            min-width: 0;
         }
 
         .field label {
@@ -113,63 +133,94 @@
         }
 
         .field input {
+            display: block;
             width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dce2ee;
+            min-width: 0;
+            min-height: 46px;
+            padding: 12px 13px;
+            border: 1px solid var(--border);
             border-radius: 9px;
             outline: none;
-            font-size: 14px;
-            transition: .2s;
+            font-family: inherit;
+            font-size: 16px;
+            color: var(--text);
+            background: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .field input:focus {
             border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(23, 42, 136, .1);
+            box-shadow: 0 0 0 3px rgba(23, 42, 136, 0.1);
+        }
+
+        .field input::placeholder {
+            color: #9aa3b4;
+            font-size: 14px;
         }
 
         .help {
             display: block;
-            margin-top: 7px;
-            font-size: 11px;
+            margin-top: 8px;
+            font-size: 12px;
             line-height: 1.6;
             color: var(--muted);
+            overflow-wrap: anywhere;
         }
 
+        /* Prevent Django password-help HTML from appearing as raw text. */
         .help ul {
             padding-left: 18px;
-            margin: 5px 0;
+            margin: 6px 0;
+        }
+
+        .help li {
+            margin-bottom: 4px;
+        }
+
+        .help a {
+            color: var(--blue);
+            overflow-wrap: anywhere;
         }
 
         .errorlist {
             color: var(--red);
             font-size: 12px;
+            line-height: 1.5;
             padding-left: 18px;
-            margin-top: 7px;
+            margin: 7px 0 0;
         }
 
         .submit {
+            display: block;
             width: 100%;
-            padding: 14px;
+            min-height: 48px;
+            padding: 13px;
             border: none;
-            border-radius: 9px;
+            border-radius: 10px;
             color: white;
             background: linear-gradient(120deg, var(--blue), #344fc5);
             font-size: 15px;
             font-weight: bold;
+            font-family: inherit;
             cursor: pointer;
-            transition: .2s;
-            margin-top: 5px;
+            transition: background 0.2s, transform 0.2s;
+            margin-top: 7px;
+            touch-action: manipulation;
         }
 
         .submit:hover {
             background: var(--blue-dark);
-            transform: translateY(-1px);
+        }
+
+        .submit:active {
+            transform: scale(0.99);
         }
 
         .bottom {
             text-align: center;
             margin-top: 23px;
             font-size: 13px;
+            line-height: 1.7;
             color: var(--muted);
         }
 
@@ -186,18 +237,62 @@
         .footer {
             text-align: center;
             font-size: 11px;
+            line-height: 1.6;
             color: var(--muted);
             margin-top: 22px;
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+                align-items: flex-start;
+            }
+
             .container {
                 padding: 25px 20px;
+                border-radius: 16px;
+                margin: auto 0;
             }
 
             .logo {
-                width: 95px;
-                height: 95px;
+                width: 90px;
+                height: 90px;
+                margin-bottom: 13px;
+            }
+
+            .heading {
+                margin-bottom: 22px;
+            }
+
+            .heading h1 {
+                font-size: 23px;
+            }
+
+            .field {
+                margin-bottom: 17px;
+            }
+
+            .bottom {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 22px 16px;
+            }
+
+            .heading h1 {
+                font-size: 21px;
+            }
+
+            .logo {
+                width: 78px;
+                height: 78px;
             }
         }
     </style>
@@ -209,14 +304,14 @@
 
     <img
         src="{% static 'images/Main.jpeg' %}"
-        alt="APOSA Arise and Build"
+        alt="APOSA Arise and Build Logo"
         class="logo"
     >
 
     <div class="heading">
         <h1>Create Your Account</h1>
         <p>Join the APOSA member inventory system.</p>
-        <div class="Arise and Build">Arise and Build</div>
+        <div class="god-first">ARISE AND BUILD</div>
     </div>
 
     {% if messages %}
@@ -237,15 +332,11 @@
         {% csrf_token %}
 
         <div class="field">
-            <label for="{{ form.username.id_for_label }}">
-                Username
-            </label>
+            <label for="{{ form.username.id_for_label }}">Username</label>
 
             {{ form.username }}
 
-            {% if form.username.errors %}
-                {{ form.username.errors }}
-            {% endif %}
+            {{ form.username.errors }}
         </div>
 
         <div class="field">
@@ -267,33 +358,25 @@
         </div>
 
         <div class="field">
-            <label for="{{ form.password1.id_for_label }}">
-                Password
-            </label>
+            <label for="{{ form.password1.id_for_label }}">Password</label>
 
             {{ form.password1 }}
 
-            {% if form.password1.errors %}
-                {{ form.password1.errors }}
-            {% endif %}
+            {{ form.password1.errors }}
 
             {% if form.password1.help_text %}
                 <div class="help">
-                    {{ form.password1.help_text|safe }}
+                    {{ form.password1.help_text }}
                 </div>
             {% endif %}
         </div>
 
         <div class="field">
-            <label for="{{ form.password2.id_for_label }}">
-                Confirm Password
-            </label>
+            <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
 
             {{ form.password2 }}
 
-            {% if form.password2.errors %}
-                {{ form.password2.errors }}
-            {% endif %}
+            {{ form.password2.errors }}
         </div>
 
         <button type="submit" class="submit">
@@ -314,4 +397,4 @@
 
 </body>
 </html>
-
+```
