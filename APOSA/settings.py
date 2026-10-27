@@ -26,12 +26,16 @@ SECRET_KEY = os.environ.get(
     'django-insecure-local-development-key-change-before-deployment'
 )
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS',
+        '127.0.0.1,localhost'
+    ).split(',')
+    if host.strip()
+]
 
-ALLOWED_HOSTS = os.environ.get(
-    'DJANGO_ALLOWED_HOSTS',
-    '127.0.0.1,localhost'
-).split(',')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
